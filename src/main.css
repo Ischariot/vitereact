@@ -1,0 +1,99 @@
+/*textarea,*/ p, input{
+    display: block;
+    outline: 2px solid #000;
+    padding: 8px;
+    box-sizing: border-box;
+    margin: 10px 0;
+}
+
+a{
+    text-decoration: none;
+    color: #000;
+    margin: 10px;
+}
+
+/*Список студентів*/
+.filters{
+    margin: 50px auto;
+    background-color: bisque;
+    padding: 20px 0;
+}
+
+.filters label {
+    margin-right: 10px;
+}
+
+.filters input[type="range"],
+.filters input[type="text"],
+.filters select {
+    padding: 5px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
+
+.filter-button {
+    padding: 5px 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #f0f0f0;
+    cursor: pointer;
+}
+
+select{
+    padding: 8px;
+    margin: 8px;
+    box-sizing: border-box;
+}
+
+/*.user p{
+    background-color: blue;
+}*/
+
+.users {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    grid-gap: 20px;
+}
+
+.user {
+    border: 1px solid #ccc;
+    padding: 10px;
+}
+
+/*Для задач*/
+.task-form {
+    margin-bottom: 20px;
+}
+
+.task-form input[type="text"] {
+    padding: 5px;
+    margin-right: 10px;
+
+}
+
+.tasks {
+    display: grid;
+    grid-gap: 10px;
+}
+
+.title_task {
+    text-align: center;
+}
+
+.task {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border: 1px solid #ccc;
+    padding: 10px;
+}
+
+.task p {
+    margin: 0;
+}
+
+.done {
+    text-decoration: line-through;
+}
+
+
