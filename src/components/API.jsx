@@ -9,7 +9,7 @@ const PokemonInfo = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await fetch('https://pokeapi.co/api/v2/pokemon?limit=10');
+                const response = await fetch('https://pokeapi.co/api/v2/pokemon?limit=20');
                 if (!response.ok) {
                     throw new Error('Failed to fetch data');
                 }
@@ -30,12 +30,12 @@ const PokemonInfo = () => {
 
     return (
         <div>
-            <h1 className="pokemon-title">Pokemon List</h1> {/* Додали клас для центрування тексту */}
-            <div className="pokemon-container">
+            <h1 className="fox-title">Fox List</h1> {/* Додали клас для центрування тексту */}
+            <div className="fox-container">
                 {pokemonList.map((pokemon, index) => (
-                    <div key={index} className="pokemon-card">
-                        <h2>{pokemon.name}</h2>
-                        <img src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${index + 1}.png`} alt={pokemon.name} />
+                    <div key={index} className="fox-card">
+                        <h2>Fox №{index+1}</h2>
+                        <img src={`https://randomfox.ca/images/${index + 1}.jpg`}/>
                     </div>
                 ))}
             </div>

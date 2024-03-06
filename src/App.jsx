@@ -10,7 +10,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import About from "./components/pages/About.jsx";
 import Services from "./components/pages/Services.jsx";
 import TestAPI from "./components/TestAPI.jsx";
-import PokeAPI from "./components/PokeAPI.jsx";
+import API from "./components/API.jsx";
 
 function App() {
     return (
@@ -24,7 +24,7 @@ function App() {
                     <Route path={"gallery"} element={<Gallery/>} />
                     <Route path="/about" element={<About/>} />
                     <Route path="/services" element={<Services />} />
-                    <Route path="/pokeapi" element={<PokeAPI />} />
+                    <Route path="/pokeapi" element={<API />} />
                     <Route path="*" element={<NotFound />} />
                 </Routes>
             </BrowserRouter>

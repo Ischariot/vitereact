@@ -12,7 +12,7 @@ const Home = () => {
         <div className="container"> {/* Додайте контейнер */}
             <Welcome name={"Iuda"} lastname={"Ischariot"}/>
             <Field label={"Введіть текст"} placeholder={"..."}/>
-            <a href="/pokeapi" className="pokeapi-button">PokeAPI</a>
+            <a href="/pokeapi" className="pokeapi-button">FOOOOX</a>
             <List/>
             <Task/>
             {/*<MainContent/>*/}

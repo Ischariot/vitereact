@@ -13,14 +13,14 @@ a{
 }
 
 .active {
-    color: #0a53be !important;
-    background-color: pink;
+    color: #ff0000 !important;
+    background-color: #a3c4bd;
 }
 
 /*Список студентів*/
 .filters{
     margin: 50px auto;
-    background-color: bisque;
+    background-color: #c596d2;
     padding: 20px 0;
 }
 
@@ -140,7 +140,7 @@ select{
 
 .pokeapi-button {
     padding: 10px 20px;
-    background-color: #f44336;
+    background-color: #ea6224;
     color: white;
     text-decoration: none;
     border: none;
@@ -159,23 +159,22 @@ select{
     outline: none;
 }
 
-.pokemon-container {
+.fox-container {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
 }
 
-.pokemon-card {
+.fox-card {
     text-align: center;
     margin: 10px;
-    width: 20%; /* Ширина елемента - 20% від батьківського контейнера */
 }
 
-.pokemon-card h2 {
+.fox-card h2 {
     margin-bottom: 5px;
 }
 
-.pokemon-title {
+.fox-title {
     margin: 20px 0;
     text-align: center; /* Центруємо текст */
 }
