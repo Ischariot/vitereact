@@ -1,47 +1,50 @@
 [
-    {
-      "name": "Dmytro",
-      "absences": 25,
-      "city": "Тишківка"
-    },
-    {
-      "name": "Danya",
-      "absences": 29,
-      "city": "Mykolaivka"
-    },
-    {
-      "name": "Vlad",
-      "absences": 30,
-      "city": "Popova"
-    },
-    {
-      "name": "Nastya",
-      "absences": 184,
-      "city": "Kalunivka"
-    },
-    {
-      "name": "Artem",
-      "absences": 30,
-      "city": "Balashovka"
-    },
-    {
-      "name": "Marianna",
-      "absences": 3120,
-      "city": "Soborna"
-    },
-    {
-      "name": "Nastya",
-      "absences": 1240,
-      "city": "Shkolne"
-    },
-    {
-      "name": "Goncharenko",
-      "absences": 3012,
-      "city": "Kyiv"
-    },
-    {
-      "name": "Marina",
-      "absences": 30,
-      "city": "Shkolne"
-    }
+  {
+    "id": 1,
+    "name": "Dima",
+    "absences": 25,
+    "city": "Тишківка"
+  },
+  {
+    "id": 2,
+    "name": "Goncharik",
+    "absences": 29,
+    "city": "Shkolne"
+  },
+  {
+    "id": 3,
+    "name": "Vladik",
+    "absences": 54,
+    "city": "Shkolne"
+  },
+  {
+    "id": 4,
+    "name": "Nastya",
+    "absences": 184,
+    "city": "Kalunivka"
+  },
+  {
+    "id": 5,
+    "name": "Anastasieva",
+    "absences": 1357,
+    "city": "Shkolne"
+  },
+  {
+    "id": 6,
+    "name": "Maryna",
+    "absences": 200,
+    "city": "Shkolne"
+  },
+  {
+    "id": 7,
+    "name": "Artem",
+    "absences": 823,
+    "city": "Katranovka"
+  },
+  {
+    "id": 8,
+    "name": "Zozulya",
+    "absences": 1,
+    "city": "Mykolaivka"
+  }
 ]

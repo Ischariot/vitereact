@@ -1,8 +1,9 @@
 import React from 'react';
+import '../main.css';
 
 function Footer() {
     return (
-        <footer style={{ backgroundColor: '#f0f0f0', padding: '20px', textAlign: 'center' }}>
+        <footer className="footer">
             <p>© 2024 My Website. All rights reserved.</p>
         </footer>
     );

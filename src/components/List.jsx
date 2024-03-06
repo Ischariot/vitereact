@@ -1,101 +1,190 @@
-import React, { useState } from 'react';
-import Students from '../list.json';
+import React, { useState, useCallback, useMemo } from 'react';
+import PropTypes from 'prop-types';
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
-import '../main.css'; // Підключаємо файл CSS
+import ToggleOffIcon from '@mui/icons-material/ToggleOff';
+import ToggleOnIcon from '@mui/icons-material/ToggleOn';
+import Checkbox from '@mui/material/Checkbox';
+import Students from '../list.json'; // Імпорт даних студентів
 
-function List() {
-    // Додано стани для фільтрації за містом, за іменем та для сортування
-    const [filterCity, setFilterCity] = useState('0'); // Додано стан для фільтрації за містом
-    const [filterName, setFilterName] = useState(''); // Додано стан для фільтрації за іменем
-    const [sortByAbsences, setSortByAbsences] = useState('ASC'); // Додано стан для сортування
+const CityFilter = ({ onChange }) => {
+    const options = useMemo(() => {
+        const uniqueCities = [...new Set(Students.map(item => item.city))];
+        return uniqueCities.map(city => (
+            <option key={city} value={city}>{city}</option>
+        ));
+    }, []);
 
-    // Отримання унікальних міст зі списку студентів
-    const cities = [...new Set(Students.map(student => student.city))];
+    return (
+        <select onChange={onChange}>
+            <option value="">All Cities</option>
+            {options}
+        </select>
+    );
+};
 
-    // Функція для фільтрації міст
-    const filterByCity = (student) => {
-        if (filterCity === '0') return true; // Якщо обрано "All", то повертаємо true
-        return student.city === filterCity; // Перевіряємо, чи місто студента співпадає з обраним містом для фільтрації
+CityFilter.propTypes = {
+    onChange: PropTypes.func.isRequired
+};
+
+const StudentComponent = ({ student, dragState, onDragStart, onDragOver, onDrop }) => {
+    const [isDragging, setIsDragging] = useState(false); // Стан для відстеження перетягування
+
+    const handleDragStart = (e) => {
+        setIsDragging(true);
+        onDragStart(student.id); // Виклик функції початку перетягування
+        e.dataTransfer.effectAllowed = 'move';
     };
 
-    // Функція для фільтрації за іменем
-    const filterByName = (student) => {
-        if (filterName === '') return true; // Якщо поле фільтрації за іменем порожнє, то повертаємо true
-        // Перевіряємо, чи ім'я студента містить введену фразу (без врахування регістру)
-        return student.name.toLowerCase().includes(filterName.toLowerCase());
+    const handleDragEnd = () => {
+        setIsDragging(false); // Завершення перетягування
     };
 
-    // Функція для сортування за кількістю пропусків
-    const sortByAbsencesFunc = (a, b) => {
-        if (sortByAbsences === 'ASC') {
-            return a.absences - b.absences; // Сортування за зростанням кількості пропусків
-        } else {
-            return b.absences - a.absences; // Сортування за спаданням кількості пропусків
+    let className = isDragging ? 'user dragging' : 'user'; // Додавання класу для перетягування
+
+    return (
+        <div
+            className={className}
+            draggable={dragState}
+            onDragStart={handleDragStart}
+            onDragEnd={handleDragEnd}
+            onDragOver={onDragOver}
+            onDrop={onDrop}
+            id={student.id} // Присвоєння ID елементу
+        >
+            <p>{student.id}</p>
+            <p>{student.name}</p>
+            <p>{student.absences}</p>
+            <p>{student.city}</p>
+        </div>
+    );
+};
+
+StudentComponent.propTypes = {
+    student: PropTypes.shape({
+        id: PropTypes.number.isRequired,
+        name: PropTypes.string.isRequired,
+        absences: PropTypes.number.isRequired,
+        city: PropTypes.string.isRequired
+    }).isRequired,
+    dragState: PropTypes.bool.isRequired,
+    onDragStart: PropTypes.func.isRequired,
+    onDragOver: PropTypes.func.isRequired,
+    onDrop: PropTypes.func.isRequired
+};
+
+const Student = React.memo(StudentComponent);
+
+const List = () => {
+    const [selectedCity, setSelectedCity] = useState(''); // Стан для обраного міста
+    const [sortDirection, setSortDirection] = useState(null); // Стан для напрямку сортування
+    const [dragState, setDragState] = useState(false); // Стан для визначення перетягування
+    const [draggedId, setDraggedId] = useState(null); // Стан для ID перетягуваного елемента
+    const [overId, setOverId] = useState(null); // Стан для ID над яким проводиться перетягування
+    const [students, setStudents] = useState(Students); // Стан для даних студентів
+
+    const handleDragStart = (id) => {
+        setDraggedId(id); // Встановлення ID перетягуваного елемента
+    };
+
+    const handleDragEnd = () => {
+        setDraggedId(null);
+        setOverId(null); // Скидання ID перетягування та над яким елементом перетягують
+    };
+
+    const handleDragOver = (e) => {
+        e.preventDefault();
+        setOverId(parseInt(e.currentTarget.id, 10)); // Встановлення ID елементу над яким проводиться перетягування
+    };
+
+    const handleDrop = () => {
+        if (draggedId && overId && draggedId !== overId) {
+            setStudents(prevStudents => replaceDraggedAndOverItems(prevStudents, draggedId, parseInt(overId, 10))); // Перестановка елементів
         }
     };
 
-    // Функція для зміни напряму сортування
-    const handleSort = () => {
-        // Якщо поточний напрям сортування - ASC, змінюємо на DESC, і навпаки
-        setSortByAbsences(sortByAbsences === 'ASC' ? 'DESC' : 'ASC');
+    const replaceDraggedAndOverItems = (students, draggedId, overId) => {
+        const indexDragged = students.findIndex(student => student.id === draggedId);
+        const indexOver = students.findIndex(student => student.id === overId);
+        if (indexDragged < 0 || indexOver < 0) return students; // Перевірка наявності валідних індексів
+
+        const newStudents = [...students];
+        [newStudents[indexDragged], newStudents[indexOver]] = [newStudents[indexOver], newStudents[indexDragged]]; // Перестановка елементів у масиві
+        return newStudents;
     };
 
-    // Функція для очищення сортування
-    const handleClearSorting = () => {
-        setSortByAbsences('ASC'); // Встановлюємо початковий напрям сортування
-        setFilterName(''); // Очищуємо фільтр по імені
-        setFilterCity('0'); // Очищуємо фільтр по місту
-    };
+    const handleDragStateChange = useCallback(() => {
+        setDragState(prev => !prev); // Зміна стану перетягування
+    }, []);
+
+    const handleCityChange = useCallback((event) => {
+        setSelectedCity(event.target.value); // Зміна обраного міста
+    }, []);
+
+    const handleSort = useCallback((direction) => {
+        setSortDirection(direction); // Зміна напрямку сортування
+    }, []);
+
+    const handleClear = useCallback(() => {
+        setSelectedCity(''); // Очищення обраного міста
+        setSortDirection(null); // Скидання напрямку сортування
+    }, []);
+
+    const sortedFilteredStudents = useMemo(() => {
+        let filteredStudents = students; // Використання стану для фільтрації студентів
+
+        if (selectedCity) {
+            filteredStudents = filteredStudents.filter(student => student.city === selectedCity); // Фільтрація за містом
+        }
+
+        if (sortDirection) {
+            filteredStudents = [...filteredStudents].sort((a, b) =>
+                sortDirection === 'up' ? a.absences - b.absences : b.absences - a.absences
+            ); // Сортування за кількістю пропущених занять
+        }
+
+        return filteredStudents;
+    }, [selectedCity, sortDirection, students]); // Додавання студентів до залежностей
+
+    if (!sortedFilteredStudents.length) {
+        return <p>Немає студентів для відображення.</p>;
+    }
 
     return (
         <>
-            {/* Фільтри */}
-            <div className={'filters'}>
-                <label>Filter by name
-                    <input className="filter-input" type="text" value={filterName} onChange={(e) => setFilterName(e.target.value)} />
+            <div className="filters">
+                <label>
+                    Фільтрувати за містом
+                    <CityFilter onChange={handleCityChange} />
                 </label>
-                <label>Filter by city
-                    <select className="filter-select" onChange={(e) => setFilterCity(e.target.value)}>
-                        <option value="0">Всі міста та села</option>
-                        {cities.map((city, index) => (
-                            <option key={index} value={city}>{city}</option>
-                        ))}
-                    </select>
-                </label>
-                {/* Кнопки для сортування */}
-                <button className="filter-button" onClick={() => setSortByAbsences('ASC')}>
-                    Absences <ArrowDownwardIcon/>
+                <button className="filterButton" onClick={() => handleSort('down')}>
+                    Absences <ArrowDownwardIcon />
                 </button>
-                <button className="filter-button" onClick={() => setSortByAbsences('DESC')}>
-                    Absences <ArrowUpwardIcon/>
+                <button className="filterButton" onClick={() => handleSort('up')}>
+                    Absences <ArrowUpwardIcon />
                 </button>
-                {/* Кнопка для очищення сортування */}
-                <button className={'filterButton'} onClick={handleClearSorting}>
+                <button className="filterButton" onClick={handleClear}>
                     Clear sorting <HighlightOffIcon />
                 </button>
+                <Checkbox icon={<ToggleOffIcon />} checkedIcon={<ToggleOnIcon />} onClick={handleDragStateChange} />
             </div>
-
-            {/* Відображення списку студентів */}
-            <h1>Students</h1>
-            <div className={"users"}>
-                {Students.filter(filterByCity).filter(filterByName).sort(sortByAbsencesFunc).map((student) => (
-                    <div className={"user"} key={student.id}>
-                        <p>
-                            {student.name}
-                        </p>
-                        <p>
-                            {student.absences}
-                        </p>
-                        <p>
-                            {student.city}
-                        </p>
-                    </div>
+            <div className="users">
+                {sortedFilteredStudents.map(student => (
+                    <Student
+                        key={student.id}
+                        student={student}
+                        dragState={dragState}
+                        onDragStart={handleDragStart}
+                        onDragOver={handleDragOver}
+                        onDragEnd={handleDragEnd}
+                        onDrop={handleDrop}
+                    />
                 ))}
             </div>
         </>
     );
-}
+};
 
 export default List;
+
